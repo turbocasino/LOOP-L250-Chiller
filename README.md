@@ -43,6 +43,7 @@ All other packages are installed by default with Python.
 
 ## Program features
 The chiller is controllable via terminal by adding to the execute command multiple keys like:
+
     -h  message of help;
     --on    switch on the pump and heating/cooling;
     --off   switch off the pump and heating/cooling;
