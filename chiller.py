@@ -20,13 +20,12 @@ dictio = json.loads(json_data)
 
 path=dictio["path"]
 defr=dictio["default_rate"]
-port=dictio["port"]
 d_fmt=dictio["date_format"]
 
 
 
 gen = serial.Serial()
-genport = port
+genport = '/dev/ttyUSB0'
 
 
 #check comunication 
@@ -56,6 +55,7 @@ ok=Fore.GREEN+Style.BRIGHT
 white=Fore.WHITE+Style.BRIGHT
 info=Fore.CYAN+Style.NORMAL
 reset=Style.RESET_ALL
+temp=Fore.YELLOW+Style.NORMAL
 
 
 
@@ -264,6 +264,10 @@ if __name__=="__main__":
                 
             file_name=naming(path)
             rate=sampling(args.log)
+
+            print(temp+f"\n[TEMP]:"+reset+f"{time_set}\tThe temperature is set at {t_set}°C")
+            print(temp+f"[TEMP]:"+reset+f"{time_res}\tThe current temperature of the reservoir is {t_res}°C\n")
+
             print(info+f"\n[INFO]:"+reset+f" {time_stat}  Logging...\n\r")
             print(white+'\t\t========= TIME ======== CURRENT TEMP ===== SET TEMP =====\r\n')
 
@@ -290,8 +294,8 @@ if __name__=="__main__":
     
     time_res,t_res = read_inside_temp()
     time_set,t_set = read_set_temp()
-    print(info+f"\n[INFO]:"+reset+f"{time_set}\tThe temperature is set at {t_set}°C")
-    print(info+f"[INFO]:"+reset+f"{time_res}\tThe current temperature of the reservoir is {t_res}°C\n")
+    print(temp+f"\n[TEMP]:"+reset+f"{time_set}\tThe temperature is set at {t_set}°C")
+    print(temp+f"[TEMP]:"+reset+f"{time_res}\tThe current temperature of the reservoir is {t_res}°C\n")
 
     
         
