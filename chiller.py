@@ -93,7 +93,7 @@ def check_dec(number:float):
             print('[INFO]: Temperature has been rounded up to one decimal figure.')
             
     else:
-        print('[ERROR]: *TEMPERATURE FORMATTING ERROR, please insert an integer or a one decimal figure float.')
+        print(error+'[ERROR]: *TEMPERATURE FORMATTING ERROR, please insert an integer or a one decimal figure float.')
     return out    
         
 
@@ -277,8 +277,10 @@ if __name__=="__main__":
                     time_res,t_res = read_inside_temp()
                     time_set,t_set = read_set_temp()
                     logging(file_name,time_res,t_res,t_set)
-                   
-                    print(f'\t\t  {time_res}\t    {t_res}\t     {t_set}\n\r')
+                    if t_res > t_set+2:
+                        print(error+f'\t\t  {time_res}\t    {t_res}\t     {t_set}\n\r')
+                    else:
+                        print(f'\t\t  {time_res}\t    {t_res}\t     {t_set}\n\r')
                     time.sleep(int(rate))
                     
                 except KeyboardInterrupt:
