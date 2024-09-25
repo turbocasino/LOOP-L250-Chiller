@@ -21,7 +21,7 @@ dictio = json.loads(json_data)
 path=dictio["path"]
 defr=dictio["default_rate"]
 d_fmt=dictio["date_format"]
-
+t_lim=dictio["temp_lim"]
 
 
 gen = serial.Serial()
@@ -277,7 +277,7 @@ if __name__=="__main__":
                     time_res,t_res = read_inside_temp()
                     time_set,t_set = read_set_temp()
                     logging(file_name,time_res,t_res,t_set)
-                    if t_res > t_set+2:
+                    if t_res > t_set+t_lim:
                         print(error+f'\t\t  {time_res}\t    {t_res}\t     {t_set}\n\r')
                     else:
                         print(f'\t\t  {time_res}\t    {t_res}\t     {t_set}\n\r')
