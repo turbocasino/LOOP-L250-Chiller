@@ -58,9 +58,10 @@ A configuration file ("config.json") is provided with the main script:
     "path":"r'C:\\User\\...\\python\\log'",
     "default_rate":"60",
     "date_format":"'%d-%m-%Y %H:%M:%S'"
+    "temp_lim":"2"
     }
 
-in which are itemized the path of the log file, the default sampling rate and the format of time logging: the file can be changed to your needs. It's necessary to format as strings every field but the def_rate: respect the example format ("  '...'  ").
+in which are itemized the path of the log file, the default sampling rate, the format of time logging and the tolerated variation of temp before displaying warning message: the file can be changed to your needs. It's necessary to format as strings every field but the def_rate and temp_lim: respect the example format ("  '...'  ").
 
 ## How to use it
 When executing the script like this
