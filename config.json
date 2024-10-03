@@ -1,5 +1,5 @@
 {
-"path":"/home/cleanroom/ALICE/giovanni/LOOP-L250-Chiller-temp-warning",
+"path":"path",
 "default_rate":"60",
 "date_format":"'%d-%m-%Y %H:%M:%S'",
 "temp_lim":"2.00"
