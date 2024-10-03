@@ -65,7 +65,7 @@ in which are itemized the path of the log file, the default sampling rate, the t
 If the os where you are working is Windows, it's recommended to write an "r" before the log path so there aren't any errors when executing (it transforms the string to a raw one). 
 On a machine with a Linux distribution you only have to inscript the path inside the double quotation marks ("") of the json value argument (i.e.: "path":"~/home/chiller").
 
-In the log file path specify the directory where you want to contain all the log files, THE SCRIPT WILL CREATE A DIRECTORY NAMED "log_chiller" if not existent.
+In the log file path specify the directory where you want to contain all the log files, THE SCRIPT WILL CREATE A DIRECTORY NAMED "chiller_log" if not existent.
 
 ## How to use it
 When executing the script like this
