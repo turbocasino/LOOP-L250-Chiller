@@ -55,13 +55,13 @@ The chiller is controllable via the terminal by adding, to the execution command
 A configuration file ("config.json") is provided with the main script:
 
     {
-    "path":"r'C:\\User\\...\\python\\log'",
+    "path":"r'C:\User\...\log'",
     "default_rate":"60",
     "date_format":"'%d-%m-%Y %H:%M:%S'"
     "temp_lim":"2"
     }
 
-in which are itemized the path of the log file, the default sampling rate, the format of time logging and the tolerated variation of temp before displaying warning message: the file can be changed to your needs. It's necessary to format as strings every field but the def_rate and temp_lim: respect the example format ("  '...'  ").
+in which are itemized the path of the log file, the default sampling rate, the format of time logging and the tolerated variation of temperature before displaying warning message on terminal: the file can be changed to your needs. It's necessary to format as strings every field but the def_rate and temp_lim: respect the example format ("  '...'  "). If the os where you are working is windows, it's recommended to write an "r" before the log path so there aren't any errors when executing (it transforms the string to a raw one).
 
 ## How to use it
 When executing the script like this
