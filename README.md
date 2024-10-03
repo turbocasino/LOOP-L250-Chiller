@@ -61,7 +61,7 @@ A configuration file ("config.json") is provided with the main script:
     "temp_lim":"2"
     }
 
-in which are itemized the path of the log file, the default sampling rate, the format of time logging and the tolerated variation of temperature before displaying warning message on terminal: the file can be changed to your needs. It's necessary to format as strings every field but the def_rate and temp_lim: respect the example format ("  '...'  "). If the os where you are working is windows, it's recommended to write an "r" before the log path so there aren't any errors when executing (it transforms the string to a raw one).
+in which are itemized the path of the log file, the default sampling rate, the time format in the log file and the tolerated variation of temperature before displaying warning message on terminal: the file can be changed based to your needs. It's necessary to format as strings every field but the def_rate and temp_lim: respect the example format ("  '...'  "). If the os where you are working is Windows, it's recommended to write an "r" before the log path so there aren't any errors when executing (it transforms the string to a raw one).
 
 ## How to use it
 When executing the script like this
@@ -74,6 +74,8 @@ If the program does not receive any keys in input, it displays the current tempe
     [TEMP]:'02-09-2024 16:17:59'	The current temperature of the reservoir is 20.0°C 
 
 WARNING: IT IS RECOMMENDED TO ALWAYS ADD NO KEYS BEFORE STARTING UP THE CHILLER, SO YOU CAN CHECK THE SET TEMPERATURE FIRST!
+
+If the reservoir temperature goes beyond the "set + temp_lim" temperature, the program starts to dispay on terminal the data highlighted red: it recalls your attention, maybe there is something wrong in the chilling process or the DUT is not cooling sufficiently. By default the "temp_lim" is set, in config.json, to 2.00°C.
 
 ### Keys:
 #### --on    
