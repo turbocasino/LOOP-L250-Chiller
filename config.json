@@ -1,5 +1,6 @@
 {
-"path":"r'C:\\Users\\giono\\Desktop\\UNIVERSITA\\programmazione\\python\\log'",
+"path":"/home/cleanroom/ALICE/giovanni/LOOP-L250-Chiller-temp-warning",
 "default_rate":"60",
-"date_format":"'%d-%m-%Y %H:%M:%S'"
+"date_format":"'%d-%m-%Y %H:%M:%S'",
+"temp_lim":"2.00"
 }

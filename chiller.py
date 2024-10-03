@@ -21,7 +21,7 @@ dictio = json.loads(json_data)
 path=dictio["path"]
 defr=dictio["default_rate"]
 d_fmt=dictio["date_format"]
-
+t_lim=dictio["temp_lim"]
 
 
 gen = serial.Serial()
@@ -93,7 +93,7 @@ def check_dec(number:float):
             print('[INFO]: Temperature has been rounded up to one decimal figure.')
             
     else:
-        print('[ERROR]: *TEMPERATURE FORMATTING ERROR, please insert an integer or a one decimal figure float.')
+        print(error+'[ERROR]: *TEMPERATURE FORMATTING ERROR, please insert an integer or a one decimal figure float.')
     return out    
         
 
@@ -124,10 +124,10 @@ def temperature(temp) :
 #==================
 #  READING
 #==================
-
+d_fmts='%d-%m-%Y %H:%M:%S'
 
 #Function for writing a reading command
-def read_cmd(cmd,d_fmt):
+def read_cmd(cmd,d_fmts):
     gen.write(bytes(cmd.encode('utf-8'))+b"\r\n")
      
     lettura = gen.readline()
@@ -136,7 +136,7 @@ def read_cmd(cmd,d_fmt):
          lettura = lettura.decode('utf-8').replace('\r\n','')
          lettura=str(float(lettura))    #it removes the zero in front of string
 
-    timestamp=datetime.datetime.now().strftime(d_fmt)         #time instant when the signal returns to pc 
+    timestamp=datetime.datetime.now().strftime(d_fmts)         #time instant when the signal returns to pc 
 
     return timestamp, lettura
 
@@ -145,30 +145,30 @@ def read_cmd(cmd,d_fmt):
 #Function for reading the SET TEMPERATURE
 def read_set_temp():
     cmd='IN_SP_00'
-    a=read_cmd(cmd,d_fmt)
+    a=read_cmd(cmd,d_fmts)
     return a
 
 #Function for reading the CURRENT TEMPERATURE OF RESERVOIR
 def read_inside_temp():
     cmd='IN_PV_00'
-    a=read_cmd(cmd,d_fmt)
+    a=read_cmd(cmd,d_fmts)
     return a
 #Function for reading high limit
 def read_set_temp_hi():
     cmd='IN_SP_04'
-    a=read_cmd(cmd,d_fmt)
+    a=read_cmd(cmd,d_fmts)
     return a
 #Function for reading low limit
 def read_set_temp_lo():
     cmd='IN_SP_05'
-    a=read_cmd(cmd,d_fmt)
+    a=read_cmd(cmd,d_fmts)
     return a
 
 
 #Function for reading device status
 def status():
     cmd='IN_MODE_02'
-    a=read_cmd(cmd,d_fmt)
+    a=read_cmd(cmd,d_fmts)
     return a
 
 
@@ -184,14 +184,15 @@ def status():
 #==================
 
 def naming(cartella):
-    timestamp=datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
+
+    timestamp=datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     file_name=os.path.join(cartella,timestamp+'.txt')
     return file_name
 
 def logging(file_name,time,t_res,t_set):
     
-    with open(file_name,'a',encoding='utf-8') as fnpy:
-            fnpy.write(f'{time}\t{t_res}\t{t_set}\n\r')
+    with open(file_name,'a',encoding='utf-8') as fn:
+            fn.write(f'{time}\t{t_res}\t{t_set}\n\r')
 
 def sampling(arg):
         rate=arg
@@ -209,6 +210,24 @@ def sampling(arg):
 
 
 if __name__=="__main__":
+
+
+    
+    logdir = "chiller_log"
+
+    fullpath = os.path.join(path, logdir) 
+
+
+    try:
+        os.mkdir(fullpath)
+        print(info+f"\n[INFO]:  Folder '%s' created!" % fullpath)
+    except FileExistsError:
+        #print(info+f"\n[INFO]:Folder '%s' already exists" % fullpath)
+        exit
+    
+    
+    
+
     
   
     parser = argparse.ArgumentParser(description="\nScript for controlling LAUDA LOOP L250 chiller.",formatter_class=argparse.RawTextHelpFormatter,epilog='\nIf no argument is inserted, the program returns the set temperature and the current reservoir temperature.\n\rIf this is the first attempt to run the program, be sure to have set the datalog file path in the "config.json" file.\n\r')
@@ -226,7 +245,7 @@ if __name__=="__main__":
     if args.on:
             time_stat, stat = status()
             if stat=='1.0':
-                print(f'\n{time_stat}\tTurning '+green+ 'ON'+ reset+ ' the chiller.')
+                print(f'\n {time_stat}\tTurning '+green+ 'ON'+ reset+ ' the chiller.')
 
                 power(True)
                 
@@ -240,7 +259,7 @@ if __name__=="__main__":
                 print('\n-----------------------------\n\r The device is already off.\n\r-----------------------------')
 
             elif stat=='0.0':
-                print(f'\n{time_stat}\tTurning '+error+ 'OFF'+ reset+ ' the chiller.')
+                print(f'\n {time_stat}\tTurning '+error+ 'OFF'+ reset+ ' the chiller.')
 
                 power(False)
 
@@ -262,23 +281,35 @@ if __name__=="__main__":
         if stat=='0.0':
             
                 
-            file_name=naming(path)
+            file_name=naming(fullpath)
             rate=sampling(args.log)
 
-            print(temp+f"\n[TEMP]:"+reset+f"{time_set}\tThe temperature is set at {t_set}°C")
-            print(temp+f"[TEMP]:"+reset+f"{time_res}\tThe current temperature of the reservoir is {t_res}°C\n")
+            time_res,t_res = read_inside_temp()
+            time_set,t_set = read_set_temp()
+
+            print(temp+f"\n[TEMP]:"+reset+f" {time_set}\tThe temperature is set at {t_set}°C")
+            print(temp+f"[TEMP]:"+reset+f" {time_res}\tThe current temperature of the reservoir is {t_res}°C\n")
 
             print(info+f"\n[INFO]:"+reset+f" {time_stat}  Logging...\n\r")
-            print(white+'\t\t========= TIME ======== CURRENT TEMP ===== SET TEMP =====\r\n')
+            print(white+'\t\t========= TIME ========= CURRENT TEMP ===== SET TEMP =====\r\n')
 
             while True:
                 try:
                     
                     time_res,t_res = read_inside_temp()
                     time_set,t_set = read_set_temp()
-                    logging(file_name,time_res,t_res,t_set)
-                   
-                    print(f'\t\t  {time_res}\t    {t_res}\t     {t_set}\n\r')
+                    time_res=time_res.strip("'")
+                    t_res=float(t_res)
+                    t_set=float(t_set)
+                    t_lim=float(t_lim)
+                    time_res_fmt=datetime.datetime.now().strftime(d_fmt)
+                    time_res_fmt=time_res_fmt.strip("'")
+                    logging(file_name,time_res_fmt,t_res,t_set)
+                    if t_res > t_set+t_lim:
+                        print("\t\t   "+f"{error}{time_res}"+f"{Style.RESET_ALL}\t    "+f"{error}{t_res}"+f"{Style.RESET_ALL}\t     "+f"{error}{t_set}"+f"{Style.RESET_ALL}\n\r")
+                       
+                    else:
+                        print(f'\t\t   {time_res}\t    {t_res}\t     {t_set}\n\r')
                     time.sleep(int(rate))
                     
                 except KeyboardInterrupt:
@@ -290,12 +321,13 @@ if __name__=="__main__":
 
         else:
             exit
-
+    else:
+        print(info+f"\n[INFO]: system is quiet, not logging")
     
     time_res,t_res = read_inside_temp()
     time_set,t_set = read_set_temp()
-    print(temp+f"\n[TEMP]:"+reset+f"{time_set}\tThe temperature is set at {t_set}°C")
-    print(temp+f"[TEMP]:"+reset+f"{time_res}\tThe current temperature of the reservoir is {t_res}°C\n")
+    print(temp+f"\n[TEMP]:"+reset+f" {time_set}\tThe temperature is set at {t_set}°C")
+    print(temp+f"[TEMP]:"+reset+f" {time_res}\tThe current temperature of the reservoir is {t_res}°C\n")
 
     
         
